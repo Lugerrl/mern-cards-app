@@ -2,30 +2,21 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function Login() {
-  const [message, setMessage] = useState('');
   const [loginName, setLoginName] = useState('');
   const [loginPassword, setPassword] = useState('');
+  const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
-  function handleSetLoginName(e: React.ChangeEvent<HTMLInputElement>): void {
-    setLoginName(e.target.value);
-  }
-
-  function handleSetPassword(e: React.ChangeEvent<HTMLInputElement>): void {
-    setPassword(e.target.value);
-  }
-
-  async function doLogin(event: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLInputElement>): Promise<void> {
-    event.preventDefault();
-
+  async function doLogin(e: React.FormEvent) {
+    e.preventDefault();
     const obj = { login: loginName, password: loginPassword };
     const js = JSON.stringify(obj);
 
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/login`, {
         method: 'POST',
         body: js,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
 
       const res = await response.json();
@@ -33,45 +24,23 @@ function Login() {
       if (res.id <= 0) {
         setMessage('User/Password combination incorrect');
       } else {
-        const user = {
-          firstName: res.firstName,
-          lastName: res.lastName,
-          id: res.id
-        };
-        localStorage.setItem('user_data', JSON.stringify(user));
+        localStorage.setItem('user_data', JSON.stringify(res));
         setMessage('');
         navigate('/cards');
       }
-    } catch (error: any) {
-      alert(error.toString());
+    } catch (err: any) {
+      alert(err.toString());
     }
   }
 
   return (
-    <form id="loginForm" onSubmit={doLogin}>
+    <form onSubmit={doLogin}>
       <div id="loginDiv">
-        <span id="inner-title">PLEASE LOG IN</span><br />
-        <input
-          type="text"
-          id="loginName"
-          placeholder="Username"
-          value={loginName}
-          onChange={handleSetLoginName}
-        /><br />
-        <input
-          type="password"
-          id="loginPassword"
-          placeholder="Password"
-          value={loginPassword}
-          onChange={handleSetPassword}
-        /><br />
-        <input
-          type="submit"
-          id="loginButton"
-          className="buttons"
-          value="Do It"
-        />
-        <span id="loginResult">{message}</span>
+        <span>PLEASE LOG IN</span><br />
+        <input type="text" placeholder="Username" onChange={e => setLoginName(e.target.value)} /><br />
+        <input type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} /><br />
+        <input type="submit" value="Do It" />
+        <span>{message}</span>
       </div>
     </form>
   );
