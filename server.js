@@ -9,7 +9,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const client = new MongoClient(process.env.MONGODB_URI);
-client.connect();
+await client.connect();
 
 app.post('/api/login', async (req, res) => {
   const { login, password } = req.body;
