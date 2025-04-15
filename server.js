@@ -15,7 +15,7 @@ async function startServer() {
     await client.connect();
     console.log('Connected to MongoDB');
 
-    const db = client.db();
+    const db = client.db("cop4331");
 
     app.post('/api/login', async (req, res) => {
       const { login, password } = req.body;
