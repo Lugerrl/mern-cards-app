@@ -1,11 +1,11 @@
+const cors = require('cors');
+app.use(cors());
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors');
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
 app.use(bodyParser.json());
 
 const client = new MongoClient(process.env.MONGODB_URI);
